@@ -1,0 +1,20 @@
+version: '3.2'
+services:
+  sftp1:
+    image: atmoz/sftp
+    container_name: sftp1
+    volumes:
+      - "./sftp1/upload:/home/foo/upload"
+      - "./sftp1/ssh_host_rsa_key:/etc/ssh/ssh_host_rsa_key"
+      - "./sftp1/ssh_host_ed25519_key.pub:/home/foo/.ssh/keys/ssh_host_ed25519_key.pub:ro"
+      - "./sftp1/ssh_host_ed25519_key:/etc/ssh/ssh_host_ed25519_key"
+    ports:
+      - "2222:22"
+    command: foo::1001
+    networks:
+      - internal-net
+
+networks:
+  internal-net:
+    driver: bridge
+
