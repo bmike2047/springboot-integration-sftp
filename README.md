@@ -6,12 +6,12 @@ This project is an example of using Spring Boot with Spring integration and SFTP
 An inbound channel adapter will connect to a SFTP server configured in application.properties.<br/>
 It will download all remote files and in our example it expects the files to contain a list of numbers separated by a line break.<br/>
 Each number line will be processed and check if the number is a prime.<br/> 
-If success the line will be logged if not and error will be thrown and the channel adapter poller will download the file again after sftp-poller-delay defined in application.properties.<br/>
+If success the line will be logged if not an error will be thrown and the channel adapter poller will process the file again after sftp-poller-delay defined in application.properties.<br/>
 Some design notes:
 * SFTP connection is done via caching session, and it will maintain permanent open connections. Testing of stale sessions is enabled.<br/>
 * SFTP connection security is done via private key and known hosts file.<br/>
 * Remote file synchronisation is done only once/file via SftpPersistentAcceptOnceFileListFilter. In case of failure the file is removed automatically from the filter's memory so a new retry will be possible on the next polling.<br/>
-* A remote file will be copied into a local file as a processing fail over strategy. 
+* A remote file will be copied into a local file as a processing fail-over strategy. 
 * Local file processing is done only once/file via AcceptOnceFileListFilter, and it will be deleted in case of success by Pseudo Transaction Manager configured inside SftpAdapter.java. In case of failure the local file will be processed again on the next polling.<br/>
 * Testing is done via an embedded Apache Mina sshd server.<br/>
 * Docker project for SFTP server is provided to simulate a Production environment 
@@ -37,11 +37,11 @@ To run the tests use the following gradle task:<br/>
 ./gradlew clean test
 ```
 > [!Note]
-> Testing is done by providing an embedded Apache Mina sshd server.<br/>
-> Since both testing and the docker SFTP provided above use the same SFTP port (2222) you might want to stop the docker container when running the test task:<br/>
+> Testing is done with the provided embedded Apache Mina sshd server.<br/>
+> Since both Apache Mina and the docker SFTP provided above use the same SFTP port (2222) you might want to stop the docker container when running the test task<br/>
 
 > [!TIP]
-> Health-check can be accessed via: http://localhost:8080/actuator/health<br/>
+> Health-check can be accessed via: http://localhost:8080/actuator/health/application<br/>
 > In case any Load Balancer will need to check if the application si alive this endpoint will return an HTTP 200 OK no matter the file processing status: http://localhost:8080/actuator/info<br/>
 
 > [!TIP]
