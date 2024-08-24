@@ -1,7 +1,10 @@
 Spring Boot Integration SFTP
 --
 ![](assets/images/logo4.png)
-### Description<br/>
+### Code repository
+<a href="https://github.com/bmike2047/springboot-integration-sftp">https://github.com/bmike2047/springboot-integration-sftp</a>
+
+### Description
 This project is an example of using Spring Boot with Spring integration and SFTP. <br/>
 An inbound channel adapter will connect to a SFTP server configured in application.properties.<br/>
 It will download all remote files and in our example it expects the files to contain a list of numbers separated by a line break.<br/>
