@@ -1,8 +1,6 @@
 Spring Boot Integration SFTP
 --
 ![](assets/images/logo4.png)
-### Code repository
-<a href="https://github.com/bmike2047/springboot-integration-sftp">https://github.com/bmike2047/springboot-integration-sftp</a>
 
 ### Description
 This project is an example of using Spring Boot with Spring integration and SFTP. <br/>
