@@ -10,17 +10,23 @@ import org.springframework.messaging.support.ErrorMessage;
 import springboot.integration.sftp.ApplicationHealthIndicator;
 
 /**
- * Handle processing errors and send them to health check
+ * Handle processing errors and send them to health check.
  */
 public class ErrorHandler implements MessageHandler {
 
     private static final Logger L = LoggerFactory.getLogger(ErrorHandler.class);
 
-
+    /**
+     * Health indicator bean.
+     */
     @Autowired
     private ApplicationHealthIndicator healthIndicator;
 
-
+    /**
+     * Handle incoming error message.
+     * @param message error message
+     * @throws MessagingException Exception thrown in case of any problems
+     */
     @Override
     public void handleMessage(Message<?> message) throws MessagingException {
         if (message instanceof ErrorMessage errorMessage) {

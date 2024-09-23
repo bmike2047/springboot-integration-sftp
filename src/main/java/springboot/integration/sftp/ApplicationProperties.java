@@ -13,40 +13,64 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties
 @Validated
 public class ApplicationProperties {
-
+    /**
+     * SFTP connection username
+     */
     @NotNull
     private String sftpUsername;
-
+    /**
+     * SFTP connection hostname
+     */
     @NotNull
     private String sftpHost;
-
+    /**
+     * SFTP connection port
+     */
     @NotNull
     private Integer sftpPort;
-
+    /**
+     * SFTP connection private key
+     */
     @NotNull
     private FileSystemResource sftpPrivateKeyFile;
-
+    /**
+     * SFTP connection know host files
+     */
     @NotNull
     private FileSystemResource sftpKnownHostsFile;
-
+    /**
+     * SFTP connection remote dir where files will pe present
+     */
     @NotNull
     private String sftpRemoteDir;
-
+    /**
+     * Local disk directory where SFTP files will be downloaded
+     */
     @NotNull
     private String sftpLocalDir;
-
+    /**
+     * SFTP connection pool size
+     */
     @NotNull
     private Integer sftpPoolSize;
-
+    /**
+     * SFTP connection session wait timeout
+     */
     @NotNull
     private Integer sftpSessionWaitTimeout;
-
+    /**
+     * SFTP connection poller delay
+     */
     @NotNull
     private Integer sftpPollerDelay;
-
+    /**
+     * SFTP connection max fetch size
+     */
     @NotNull
     private Integer sftpMaxFetchSize;
-
+    /**
+     * SFTP connection max messages per poll
+     */
     @NotNull
     private Integer sftpMaxMessagesPerPoll;
 

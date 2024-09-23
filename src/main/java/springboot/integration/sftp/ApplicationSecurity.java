@@ -13,7 +13,13 @@ import org.springframework.security.web.SecurityFilterChain;
  */
 @Configuration
 public class ApplicationSecurity {
-
+    /**
+     * Permit only chain rules.
+     *
+     * @param http HttpSecurity
+     * @return SecurityFilterChain
+     * @throws Exception thrown exception in case of problems
+     */
     @Bean
     SecurityFilterChain permitOnly(final HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
@@ -23,7 +29,7 @@ public class ApplicationSecurity {
     }
 
     /**
-     * Fix AuthenticationManager user password in the logs.
+     * Fix spring AuthenticationManager user password in the logs.
      */
     @Bean
     public AuthenticationManager noopAuthenticationManager() {

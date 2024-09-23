@@ -1,8 +1,6 @@
 package springboot.integration.sftp;
 
 import org.apache.sshd.sftp.client.SftpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -37,21 +35,25 @@ import java.io.File;
 import java.util.List;
 
 /**
- * Main SFTP setup and configuration.
+ * Main SFTP adapter setup and configuration.
  */
 @Configuration
 public class SftpAdapter {
-
-    private static final Logger L = LoggerFactory.getLogger(SftpAdapter.class);
-
+    /**
+     * ApplicationContext for transaction manager
+     */
     @Autowired
     private ApplicationContext applicationContext;
+    /**
+     * ApplicationProperties for SFTP connection parameters and local file storage.
+     */
     @Autowired
     private ApplicationProperties applicationProperties;
 
     /**
+     * Session factory configuration.
      * Using caching session to maintain permanent open connections.
-     * Testing of stale sessions is enabled.
+     * Testing of stale sessions for better stability.
      * Each session will create its own connection.
      */
     @Bean
@@ -69,6 +71,11 @@ public class SftpAdapter {
         return cachingSessionFactory;
     }
 
+    /**
+     * Handles the synchronization between remote SFTP directory and local mount.
+     *
+     * @return SftpInboundFileSynchronizer
+     */
     @Bean
     public SftpInboundFileSynchronizer sftpFileSynchronizer() {
         SftpInboundFileSynchronizer fileSynchronizer = new SftpInboundFileSynchronizer(sftpSessionFactory());
@@ -85,7 +92,10 @@ public class SftpAdapter {
     }
 
     /**
-     * Needed as a Bean for the transaction manager.
+     * Filter to prevent file duplication.
+     * Needed as a bean also for the transaction manager.
+     *
+     * @return AcceptOnceFileListFilter
      */
     @Bean
     public AcceptOnceFileListFilter acceptOnceFileListFilter() {
@@ -94,6 +104,8 @@ public class SftpAdapter {
 
     /**
      * Synchronize remote files to local.
+     *
+     * @return received file as a message
      */
     @Bean
     @InboundChannelAdapter(channel = "sftpChannel", poller = @Poller(value = "pollerMetadata"))
@@ -108,7 +120,9 @@ public class SftpAdapter {
     }
 
     /**
-     * Config poller.
+     * Poller configuration.
+     *
+     * @return PollerMetadata
      */
     @Bean
     public PollerMetadata pollerMetadata() {
@@ -121,6 +135,8 @@ public class SftpAdapter {
 
     /**
      * Logical transaction manager.
+     *
+     * @return PseudoTransactionManager
      */
     @Bean
     PseudoTransactionManager transactionManager() {
@@ -128,7 +144,9 @@ public class SftpAdapter {
     }
 
     /**
-     * Helper Bean for the transaction manager.
+     * Helper bean for the transaction manager.
+     *
+     * @return TransactionManagerOps
      */
     @Bean
     public TransactionManagerOps managerOps() {
@@ -136,7 +154,9 @@ public class SftpAdapter {
     }
 
     /**
-     * Rollback and commit logic.
+     * Transaction manager rollback and commit logic.
+     *
+     * @return TransactionSynchronizationFactory
      */
     @Bean
     TransactionSynchronizationFactory transactionSynchronizationFactory() {
@@ -154,12 +174,22 @@ public class SftpAdapter {
         return new DefaultTransactionSynchronizationFactory(syncProcessor);
     }
 
+    /**
+     * Handler for incoming files.
+     *
+     * @return MessageHandler
+     */
     @Bean
     @ServiceActivator(inputChannel = "sftpChannel")
     public MessageHandler inboundHandler() {
         return new ReceivedFilesHandler();
     }
 
+    /**
+     * Handler for error messages.
+     *
+     * @return MessageHandler
+     */
     @Bean
     @ServiceActivator(inputChannel = "errorChannel")
     public MessageHandler customErrorHandler() {
